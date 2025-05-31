@@ -1,0 +1,47 @@
+{
+    "expo": {
+        "name": "edhar",
+        "slug": "edhar",
+        "version": "1.0.0",
+        "orientation": "portrait",
+        "icon": "./assets/images/logo/logo_without_frame.png",
+        "scheme": "edhar",
+        "userInterfaceStyle": "automatic",
+        "newArchEnabled": true,
+        "ios": {
+            "supportsTablet": true
+        },
+        "android": {
+            "adaptiveIcon": {
+                "foregroundImage": "./assets/images/logo/logo_without_frame.png",
+                "backgroundColor": "#fff"
+            },
+            "edgeToEdgeEnabled": true,
+            "package": "com.anonymous.edhar"
+        },
+        "web": {
+            "bundler": "metro",
+            "output": "static",
+            "favicon": "./assets/images/logo/logo_without_frame.png"
+        },
+        "plugins": [
+            "expo-router", [
+                "expo-splash-screen",
+                {
+                    "image": "./assets/images/logo/logo_without_frame.png",
+                    "imageWidth": 200,
+                    "resizeMode": "contain",
+                    "backgroundColor": "#fff"
+                }
+            ]
+        ],
+        "experiments": {
+            "typedRoutes": true
+        },
+        "extra": {
+            "eas": {
+                "projectId": "YOUR_PROJECT_ID_HERE"
+            }
+        }
+    }
+}
