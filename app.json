@@ -1,51 +1,53 @@
 {
-    "expo": {
-        "name": "edhar",
-        "slug": "edhar",
-        "version": "1.0.0",
-        "orientation": "portrait",
-        "icon": "./assets/images/logo/logo_without_frame.png",
-        "scheme": "edhar",
-        "userInterfaceStyle": "automatic",
-        "newArchEnabled": true,
-        "ios": {
-            "supportsTablet": true
-        },
-        "android": {
-            "adaptiveIcon": {
-                "foregroundImage": "./assets/images/logo/logo_without_frame.png",
-                "backgroundColor": "#ffffff"
-            },
-            "edgeToEdgeEnabled": true,
-            "package": "com.anonymous.edhar"
-        },
-        "androidStatusBar": {
-            "backgroundColor": "#ffffff"
-        },
-        "web": {
-            "bundler": "metro",
-            "output": "static",
-            "favicon": "./assets/images/logo/logo_without_frame.png"
-        },
-        "plugins": [
-            "expo-router", [
-                "expo-splash-screen",
-                {
-                    "image": "./assets/images/logo/logo_without_frame.png",
-                    "imageWidth": 200,
-                    "resizeMode": "contain",
-                    "backgroundColor": "#ffffff"
-                }
-            ]
-        ],
-        "experiments": {
-            "typedRoutes": true
-        },
-        "extra": {
-            "router": {},
-            "eas": {
-                "projectId": "85cc736d-b29a-45d0-b0d6-0c90414135ff"
-            }
+  "expo": {
+    "name": "edhar",
+    "slug": "edhar-expo",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/logo/logo_without_frame.png",
+    "scheme": "edhar",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/logo/logo_without_frame.png",
+        "backgroundColor": "#ffffff"
+      },
+      "edgeToEdgeEnabled": true,
+      "package": "com.anonymous.edhar"
+    },
+    "androidStatusBar": {
+      "backgroundColor": "#ffffff"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/logo/logo_without_frame.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/logo/logo_without_frame.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#ffffff"
         }
-    }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "911db89c-409c-4e8f-b3f2-0420edebd095"
+      }
+    },
+    "owner": "binhunnaish"
+  }
 }
