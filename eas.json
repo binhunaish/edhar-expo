@@ -1,0 +1,27 @@
+{
+    "cli": {
+        "version": ">= 5.9.3",
+        "appVersionSource": "remote"
+    },
+    "build": {
+        "apk": {
+            "developmentClient": false,
+            "distribution": "internal"
+        },
+        "development": {
+            "developmentClient": true,
+            "distribution": "internal"
+        },
+        "preview": {
+            "developmentClient": false,
+            "distribution": "internal"
+        },
+        "production": {
+            "developmentClient": false,
+            "distribution": "internal"
+        }
+    },
+    "submit": {
+        "production": {}
+    }
+}

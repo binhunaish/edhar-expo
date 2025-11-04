@@ -1,6 +1,6 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StatusBar, StyleSheet, View } from 'react-native';
 import { ActivityIndicator, Appbar, Banner, Text, TextInput } from 'react-native-paper';
 import ProductCard from '../components/ProductCard';
 
@@ -63,6 +63,7 @@ export default function SearchScreen() {
 
   return (
     <View style={{ flex: 1 }}>
+      <StatusBar />
       <Appbar.Header>
         <Appbar.BackAction onPress={back} />
         <Appbar.Content title={currentSearchTerm ? `Results: ${currentSearchTerm}` : "Search"} />

@@ -1,7 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Image } from 'expo-image';
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { Platform, ScrollView, StyleSheet, View } from "react-native";
+import { Platform, ScrollView, StatusBar, StyleSheet, View } from "react-native";
 import { Appbar, IconButton, Menu, Text, useTheme } from "react-native-paper";
 import ProductCard from "./components/ProductCard";
 
@@ -12,8 +13,6 @@ export default () => {
   const [favoriteProducts, setFavoriteProducts] = useState([]);
   const [menuVisible, setMenuVisible] = useState(false);
   const { colors } = useTheme();
-
-  console.log(favoriteProducts);
   
 
   const loadFavoriteProducts = useCallback(async () => {
@@ -87,19 +86,23 @@ export default () => {
       <Appbar.Header>
         <Appbar.BackAction onPress={() => router.back()} />
         <Appbar.Content title="Favorites" />
-        <Menu
-          visible={menuVisible}
-          onDismiss={() => setMenuVisible(false)}
-          anchor={
-            <Appbar.Action icon="ellipsis-vertical" onPress={() => setMenuVisible(true)} />
-          }
-        >
-          <Menu.Item onPress={handleAddAllToCart} title="Add All to Cart" />
-          <Menu.Item onPress={handleRemoveAllFavorites} title="Remove All Favorites" />
-        </Menu>
+        {favoriteProducts.length > 0 && (
+          <Menu
+            elevation={3}
+            contentStyle={{ borderRadius: 8, padding: 8, backgroundColor: '#FFFFFF' }}
+            visible={menuVisible}
+            onDismiss={() => setMenuVisible(false)}
+            anchor={
+              <Appbar.Action icon="ellipsis-vertical" onPress={() => setMenuVisible(true)} />
+            }
+          >
+            <Menu.Item onPress={handleAddAllToCart} title="Add All to Cart" leadingIcon="cart-plus" />
+            <Menu.Item onPress={handleRemoveAllFavorites} title="Remove All Favorites" leadingIcon="x" />
+          </Menu>
+        )}
       </Appbar.Header>
-      <ScrollView contentContainerStyle={styles.container}>
-        {favoriteProducts.length > 0 ? (
+      <ScrollView contentContainerStyle={{flex: 1, display: "flex", alignItems: "flex-start", padding: 16}}>
+          {favoriteProducts.length > 0 ? (
           <View style={Platform.OS === 'web' ? styles.gridContainer : null}>
             {favoriteProducts.map((product) => (
               <View key={product._id}>
@@ -114,8 +117,12 @@ export default () => {
               </View>
             ))}
           </View>
-        ) : (
-          <Text>No Favorites</Text>
+        
+      ) : (
+          <View style={styles.container}>
+            <Image source={require('../assets/images/no-favorites.png')} style={{width: 100, height: 100, marginBottom: 16}} /> 
+          <Text style={{textAlign: "center", color:"gray-500"}}>No favorites yet. You can add products to your favorites by clicking the heart icon on the product details page.</Text>
+          </View>
         )}
       </ScrollView>
     </View>
@@ -127,12 +134,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   container: {
+    display: "flex",
     padding: 16,
     alignItems: 'center',
     justifyContent: 'center',
-    flex: 1
+    flex: 1,
   },
   gridContainer: {
+    alignItems: "flex-start",
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',

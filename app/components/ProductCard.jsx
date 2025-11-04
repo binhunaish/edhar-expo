@@ -55,7 +55,7 @@ const ProductCard = ({ product }) => {
           mode='contained' 
           style={cardStyles.card}
         >
-          <Card.Cover source={{ uri: product.image }} style={cardStyles.productImage} resizeMode="contain" />
+          <Card.Cover source={{ uri: product.image }} style={cardStyles.productImage} contentFit="contain" />
           <Card.Content style={cardStyles.productContent}>
             <Text variant='titleMedium' numberOfLines={2} style={cardStyles.titleText}>{product.title}</Text>
             <Text variant='bodySmall' style={{color: colors.onSurface}}>Category: {product.category}</Text>

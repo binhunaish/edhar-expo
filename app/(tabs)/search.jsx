@@ -1,10 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, StatusBar, StyleSheet, View } from "react-native";
 import { ActivityIndicator, Button, Chip, Text, TextInput } from "react-native-paper";
+import { useFetch } from '../../hooks/useFetch';
 import ProductCard from '../components/ProductCard';
-import { useFetch } from '../hooks/useFetch';
 
 export default function Search() {
   const [history, setHistory] = useState([]);
@@ -66,7 +66,7 @@ export default function Search() {
 
   if (searchPageLoading) {
     return (
-      <View style={[mainStyles.page, { justifyContent: 'center', alignItems: 'center' }]}>
+      <View style={[mainStyles.page, { flex: 1, justifyContent: 'center', alignItems: 'center' }]}>
         <ActivityIndicator size="large" />
       </View>
     );
@@ -81,44 +81,46 @@ export default function Search() {
   }
 
   return (
-    <ScrollView contentContainerStyle={mainStyles.page}>
-      <TextInput
-        label="Search"
-        inputMode="search"
-        mode="outlined"
-        style={mainStyles.search}
-        value={searchText}
-        onChangeText={setSearchText}
-        onSubmitEditing={handleSearch}
-        right={<TextInput.Icon icon="magnifying-glass" onPress={handleSearch} />}
-      />
-      {history.length > 0 && (
-        <HistoryChips
-          topic="History"
-          data={history}
-          onDelete={removeFromHistory}
-          onDeleteAll={removeAllHistory}
+    <>
+      <ScrollView contentContainerStyle={mainStyles.page}>
+        <TextInput
+          label="Search"
+          inputMode="search"
+          mode="outlined"
+          style={mainStyles.search}
+          value={searchText}
+          onChangeText={setSearchText}
+          onSubmitEditing={handleSearch}
+          right={<TextInput.Icon icon="magnifying-glass" onPress={handleSearch} />}
         />
-      )}
-      {searchPageData && searchPageData.tags && <Chips topic="Suggested" tags={searchPageData.tags} />}
+        {history.length > 0 && (
+          <HistoryChips
+            topic="History"
+            data={history}
+            onDelete={removeFromHistory}
+            onDeleteAll={removeAllHistory}
+          />
+        )}
+        {searchPageData && searchPageData.tags && <Chips topic="Suggested" tags={searchPageData.tags} />}
 
-      <Text variant='titleMedium' style={mainStyles.productTitle}>Some Products:</Text>
-      <ScrollView horizontal style={mainStyles.productScroll}>
-        {searchPageData && searchPageData.products && searchPageData.products.map((product) => {
-          const imageUrl = Array.isArray(product.images) && product.images.length > 0 
-                           ? product.images[0] 
-                           : typeof product.image === 'string' ? product.image : null;
-          
-          return (
-            <ProductCard 
-              key={product.id || product._id} 
-              product={{...product, image: imageUrl}}
-            />
-          );
-        })}
+        <Text variant='titleMedium' style={mainStyles.productTitle}>Some Products:</Text>
+        <ScrollView horizontal style={mainStyles.productScroll}>
+          {searchPageData && searchPageData.products && searchPageData.products.map((product) => {
+            const imageUrl = Array.isArray(product.images) && product.images.length > 0 
+                             ? product.images[0] 
+                             : typeof product.image === 'string' ? product.image : null;
+            
+            return (
+              <ProductCard 
+                key={product.id || product._id} 
+                product={{...product, id: product.id || product._id, image: imageUrl}}
+              />
+            );
+          })}
+        </ScrollView>
+
       </ScrollView>
-
-    </ScrollView>
+    </>
   );
 }
 

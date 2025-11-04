@@ -1,16 +1,19 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Image } from 'expo-image';
 import { useFocusEffect, useRouter } from 'expo-router';
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
-import { Button, Dialog, Portal, Text, TextInput, useTheme } from "react-native-paper";
-import { myTheme } from '../_layout';
+import { ActivityIndicator, Button, Dialog, Portal, Text, TextInput, useTheme } from "react-native-paper";
 import ProductCartItem from "../components/ProductCartItem";
 
 export default function Index() {
-  const { colors } = useTheme();
+  const theme = useTheme();
+  const { colors } = theme;
   const [cartItems, setCartItems] = useState([]);
   const router = useRouter();
   const [showEmptyCartDialog, setShowEmptyCartDialog] = useState(false);
+  const [loading, setLoading] = useState(true); // Add loading state
+  const isFirstLoadRef = useRef(true); // Ref to track first load
 
   // State for Checkout Dialog Form
   const [showCheckoutDialog, setShowCheckoutDialog] = useState(false);
@@ -23,9 +26,26 @@ export default function Index() {
   const [submissionLoading, setSubmissionLoading] = useState(false);
   const [submissionError, setSubmissionError] = useState(null);
 
+  const loadCustomerData = useCallback(async () => {
+    try {
+      const customerDataJson = await AsyncStorage.getItem('customerData');
+      if (customerDataJson) {
+        const { name, address, phone } = JSON.parse(customerDataJson);
+        setName(name || '');
+        setAddress(address || '');
+        setPhoneNumber(phone || '');
+      }
+    } catch (error) {
+      console.error("Failed to load customer data from AsyncStorage", error);
+    }
+  }, []);
+
   useFocusEffect(
     useCallback(() => {
       const loadCartItems = async () => {
+        if (isFirstLoadRef.current) {
+          setLoading(true); // Set loading to true only on first load
+        }
         try {
           const cart = await AsyncStorage.getItem('cart');
           if (cart) {
@@ -36,6 +56,9 @@ export default function Index() {
           }
         } catch (error) {
           console.error("Failed to load cart from AsyncStorage", error);
+        } finally {
+          setLoading(false); // Always set loading to false after completion
+          isFirstLoadRef.current = false; // Mark that the first load has completed
         }
       };
 
@@ -92,6 +115,7 @@ export default function Index() {
   // --- Checkout Dialog Logic ---
   const openCheckoutDialog = () => {
     if (cartItems.length > 0) {
+      loadCustomerData(); // Load customer data when dialog opens
       setName('');
       setAddress('');
       setPhoneNumber('');
@@ -173,7 +197,6 @@ export default function Index() {
       await AsyncStorage.removeItem('cart');
       setCartItems([]); // Clear cart in UI
       setShowCheckoutDialog(false);
-      alert('Your request has been submitted successfully. Our sales team will call you later.');
       // Optionally navigate or give further user feedback
 
     } catch (e) {
@@ -189,7 +212,7 @@ export default function Index() {
     <View style={{ flex: 1 }}>
       <Portal>
         {/* Empty Cart Confirmation Dialog */}
-        <Dialog style={styles.dialog} visible={showEmptyCartDialog} onDismiss={hideEmptyCartConfirmationDialog}>
+        <Dialog theme={theme} style={{...styles.dialog, ...{borderColor: colors.primary}}} visible={showEmptyCartDialog} onDismiss={hideEmptyCartConfirmationDialog}>
           <Dialog.Title>Confirm</Dialog.Title>
           <Dialog.Content>
             <Text variant="bodyMedium">Are you sure you want to empty your cart?</Text>
@@ -201,9 +224,9 @@ export default function Index() {
         </Dialog>
 
         {/* Checkout Form Dialog */}
-        <Dialog style={styles.dialog} visible={showCheckoutDialog} onDismiss={closeCheckoutDialog}>
-          <Dialog.Title>Complete Your Request</Dialog.Title>
-          <Dialog.Content>
+        <Dialog style={[styles.dialog, {borderColor: colors.primary, backgroundColor: colors.background}]} visible={showCheckoutDialog} onDismiss={closeCheckoutDialog}>
+          <Dialog.Title style={{color: colors.primary}}>Complete Your Request</Dialog.Title>
+          <Dialog.Content style={{color: colors.primary}}>
             <TextInput
               label="Name"
               value={name}
@@ -238,7 +261,7 @@ export default function Index() {
             {!!phoneError && <Text style={styles.errorTextDialog}>{phoneError}</Text>}
 
             {submissionError && (
-              <Text style={[styles.errorTextDialog, styles.apiErrorDialog]}>{submissionError}</Text>
+              <Text style={[styles.errorTextDialog, styles.apiErrorDialog, ...{color: colors.error || "red"}]}>{submissionError}</Text>
             )}
           </Dialog.Content>
           <Dialog.Actions>
@@ -252,8 +275,13 @@ export default function Index() {
         contentContainerStyle={styles.scrollContentContainer} 
         style={styles.scrollView}
       >
-        {cartItems.length < 1 ? (
+        {loading ? (
           <View style={styles.emptyCartContainer}>
+            <ActivityIndicator size="large" color={colors.primary} />
+          </View>
+        ) : cartItems.length < 1 ? (
+          <View style={styles.emptyCartContainer}>
+            <Image source={require('../../assets/images/no-cart.png')} style={{width: 150, height: 100, marginBottom: 16, contentFit: 'contain'}} />
             <Text variant="bodyLarge" style={styles.emptyCartText}>Your cart is empty.</Text>
             <Button mode="contained" onPress={() => router.push('/(tabs)/home')}>
               Go to Home
@@ -345,7 +373,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   dialog: {
-    backgroundColor: myTheme.colors.background || '#fff',
     borderRadius: 8,
     marginHorizontal: 16,
   },
@@ -354,7 +381,6 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   errorTextDialog: {
-    color: myTheme.colors.error || 'red',
     fontSize: 12,
     marginBottom: 4,
     marginLeft: 8,

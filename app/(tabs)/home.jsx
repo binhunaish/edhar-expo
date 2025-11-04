@@ -1,16 +1,16 @@
-import { } from '@gorhom/bottom-sheet';
 import { useRouter } from 'expo-router';
 import { useState } from "react";
 import { ScrollView, StatusBar, StyleSheet, View } from 'react-native';
-import { ActivityIndicator, Appbar, Button, Menu, Text, useTheme } from "react-native-paper";
+import { ActivityIndicator, Appbar, Button, Menu, Portal, Snackbar, Text, useTheme } from "react-native-paper";
+import { useFetch } from '../../hooks/useFetch';
 import ProductCard from '../components/ProductCard';
-import { useFetch } from '../hooks/useFetch';
 
 // main
 export default function Home() {
   const [menuVisible, setMenuVisible] = useState(false);
   const { data, loading, error } = useFetch(process.env.EXPO_PUBLIC_API_URL + 'bars');
   const sections = data ? data.filter(section => section.products && section.products.length > 0) : [];
+  const [snackbarVisible, setSnackbarVisible] = useState(false);
 
   const handleBarPress = () => {
     setMenuVisible(true);
@@ -21,7 +21,7 @@ export default function Home() {
   if (loading) {
     return (
       <View style={[styles.page, { justifyContent: 'center', alignItems: 'center' }]}>
-        <ActivityIndicator size={72} animating={true} color={theme.colors.primary} />
+        <ActivityIndicator size="large" animating={true} color={theme.colors.primary} />
       </View>
     );
   }
@@ -35,19 +35,17 @@ export default function Home() {
   }
 
   return (<>
-    <StatusBar animated={true} barStyle="dark-content" backgroundColor={theme.colors.surface} />
     <Appbar.Header style={styles.header}>
       <Appbar.Action icon={require('../../assets/images/logo/logo_without_frame.png')} size={28} />
       <Appbar.Content titleStyle={{ fontWeight: "bold" }} title="Enjoy Shoping" />
       <Appbar.Action onPress={() => navigator("/favorite")} icon="heart" />
       <Menu
-        style={{ backgroundColor: theme.colors.transparent }}
-        mode='elevated'
-        elevation={0}
+        elevation={3}
+        contentStyle={{ borderRadius: 8, padding: 8, backgroundColor: '#FFFFFF' }}
         visible={menuVisible}
         onDismiss={() => setMenuVisible(false)}
         anchor={<Appbar.Action onPress={handleBarPress} icon="ellipsis-vertical" />}
-        children={<MenuView />}
+        children={<MenuView setMenuVisible={setMenuVisible} setSnackbarVisible={setSnackbarVisible} />}
         statusBarHeight={StatusBar.currentHeight}
         />
     </Appbar.Header>
@@ -63,28 +61,28 @@ export default function Home() {
         ))}
       </View>
     </ScrollView>
+    <Portal>
+      <Snackbar
+        visible={snackbarVisible}
+        onDismiss={() => setSnackbarVisible(false)}
+        duration={3000}
+      >
+        Not available yet.
+      </Snackbar>
+    </Portal>
   </>);
 }
 
 
 // components
-const MenuView = () => {
+const MenuView = ({ setMenuVisible, setSnackbarVisible }) => {
   const { colors } = useTheme();
-
-  return <View 
-  style={{
-      backgroundColor: colors.surface,
-      shadowColor: colors.shadow,
-      shadowRadius: 4,
-      shadowOffset: { width: 0, height: 0 },
-      shadowOpacity: 0.2,
-      elevation: 0,
-      borderRadius: 8,
-      padding: 8,
-      }}>
-    <Menu.Item title="Settings" leadingIcon="gear" onPress={() => { }} />
-    <Menu.Item title="Contact Us" leadingIcon="phone" onPress={() => { }} />
-    <Menu.Item title="About" leadingIcon="info" onPress={() => { }} />
+  const router = useRouter();
+  
+  return <View>
+    <Menu.Item title="Settings" leadingIcon="gear" onPress={() => { router.push("/settings"); setMenuVisible(false); }} />
+    <Menu.Item title="Contact Us" leadingIcon="phone" onPress={() => { setSnackbarVisible(true); setMenuVisible(false); }} />
+    <Menu.Item title="About" leadingIcon="info" onPress={() => { router.push("/about"); setMenuVisible(false); }} />
   </View>
 }
 
@@ -158,4 +156,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 2,
   },
+  menu: {
+    // Removed as styling is now handled by contentStyle prop of Menu component
+    }
 });

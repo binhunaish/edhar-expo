@@ -1,9 +1,9 @@
 import { FontAwesome6 as FontAwesome } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
-import { Text, useTheme } from 'react-native-paper';
+import { useTheme } from 'react-native-paper';
 
 export default () => {
-    const myTheme = useTheme();
+    const { colors } = useTheme();
     var op = (IconName, title) => {
         return {
             headerShown: 0,
@@ -12,10 +12,10 @@ export default () => {
         }
     };
     var screen = {
-        tabBarActiveTintColor: myTheme.colors.primary,
-        tabBarInactiveTintColor: myTheme.colors.onSurfaceDisabled,
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.onSurfaceDisabled,
         tabBarStyle: {
-            backgroundColor: myTheme.colors.surface,
+            backgroundColor: colors.surface,
             borderColor: "transparent",
             shadowColor: "#000",
             shadowRadius: 2,

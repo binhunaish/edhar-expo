@@ -1,6 +1,6 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Platform, ScrollView, StyleSheet, View } from 'react-native';
+import { Platform, ScrollView, StatusBar, StyleSheet, View } from 'react-native';
 import { Appbar, Text, useTheme } from 'react-native-paper';
 import ProductCard from './components/ProductCard';
 
@@ -23,6 +23,7 @@ export default function ProductsSection() {
 
   return (
     <View style={styles.container}>
+      <StatusBar />
       <Appbar.Header style={{ backgroundColor: colors.surface }}>
         <Appbar.BackAction onPress={() => router.back()} />
         <Appbar.Content title={title} />

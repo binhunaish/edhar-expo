@@ -5,16 +5,16 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Image, ScrollView, StyleSheet, TouchableOpacity, View, useWindowDimensions } from 'react-native';
 import { ActivityIndicator, Appbar, Button, Chip, IconButton, Text, useTheme } from 'react-native-paper';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { myTheme } from '../_layout';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useFetch } from '../../hooks/useFetch';
 import ProductCard from '../components/ProductCard';
-import { useFetch } from '../hooks/useFetch';
 
 export default function ProductDetails() {
   const { id } = useLocalSearchParams();
   const { colors } = useTheme();
   const router = useRouter();
   const { width: windowWidth } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
 
   const { data: apiResponse, loading, error } = useFetch(
     process.env.EXPO_PUBLIC_API_URL + 'bars/details/' + id
@@ -33,6 +33,7 @@ export default function ProductDetails() {
 
   // Autoplay slideshow effect
   useEffect(() => {
+    product?.images && (product.images[1] = product.images[0]);
     if (product?.images && product.images.length > 1) {
       const slideWidth = windowWidth - 16;
       intervalRef.current = setInterval(() => {
@@ -206,7 +207,7 @@ export default function ProductDetails() {
         <Appbar.Content title={product.title} />
       </Appbar.Header>
       <SafeAreaView style={{ flex: 1 }}>
-        <ScrollView contentContainerStyle={[styles.container]}>
+        <ScrollView contentContainerStyle={[styles.container, { paddingBottom: insets.bottom }]}>
           {product.images && product.images.length > 0 && (
             <View style={styles.slideshowWrapper}>
               <ScrollView
@@ -214,12 +215,14 @@ export default function ProductDetails() {
                 horizontal
                 pagingEnabled
                 showsHorizontalScrollIndicator={false}
-                style={[styles.slideshowContainer, { width: windowWidth - 16 }]}
+                style={[styles.slideshowContainer, { width: windowWidth - 16, backgroundColor: colors.background, borderRadius: 16}]}
                 onScroll={onScroll}
                 scrollEventThrottle={16}
               >
                 {product.images.map((imgUrl, index) => (
-                  <Image key={index} source={{ uri: imgUrl }} style={[styles.slideImage, { width: windowWidth - 16 }]} />
+                  <View key={index} style={{ flex: 1}}>
+                    <Image source={{ uri: imgUrl }} height={300} style={{width: windowWidth - 16, height: 300, resizeMode: 'contain'}} />
+                  </View>
                 ))}
               </ScrollView>
               {/* Pagination Dots */}
@@ -230,7 +233,8 @@ export default function ProductDetails() {
                         <View 
                             style={[
                                 styles.paginationDot,
-                                activeSlide === index ? styles.paginationDotActive : styles.paginationDotInactive,
+                                activeSlide === index ? styles.paginationDotActive : null,
+                                { backgroundColor: activeSlide === index ? colors.primary : colors.disabled || 'gray' }
                             ]}
                         />
                     </TouchableOpacity>
@@ -342,11 +346,12 @@ const styles = StyleSheet.create({
   container: {
     padding: 8,
     alignItems: 'flex-start',
+    flexGrow: 1,
   },
   image: {
     width: '100%',
     height: 300,
-    resizeMode: 'contain',
+    contentFit: 'contain',
     marginBottom: 16,
   },
   title: {
@@ -429,11 +434,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   slideshowContainer: {
-    height: 300,
-  },
-  slideImage: {
     height: '100%',
-    resizeMode: 'contain',
   },
   tagsContainer: {
     marginTop: 8,
@@ -496,6 +497,7 @@ const styles = StyleSheet.create({
   slideshowWrapper: {
     marginBottom: 16,
     alignItems: 'center',
+    height: 300,
   },
   paginationContainer: {
     flexDirection: 'row',
@@ -510,10 +512,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 4,
   },
   paginationDotActive: {
-    backgroundColor: myTheme.colors.primary || 'blue',
     width: 16,
-  },
-  paginationDotInactive: {
-    backgroundColor: myTheme.colors.disabled || 'gray',
   },
 });

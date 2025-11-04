@@ -2,7 +2,6 @@ import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Image, Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Card, IconButton, Text, useTheme } from 'react-native-paper';
-import { myTheme } from '../_layout';
 
 const ProductCartItem = ({ product, onDelete, onCountChange }) => {
     const [count, setCount] = useState(product.count || 1);
@@ -55,30 +54,30 @@ const ProductCartItem = ({ product, onDelete, onCountChange }) => {
     }, [product.image]);
 
     return (
-        <Card mode='contained' style={[styles.card, Platform.OS === 'web' ? styles.webCard : null]}>
+        <Card mode='contained' style={[styles.card, Platform.OS === 'web' ? styles.webCard : null, {borderColor: colors.primary}]}>
             <Card.Content style={styles.content}>
                 <TouchableOpacity onPress={handleVisit}>
                     <View style={styles.imageContainer}>
                         <Image
                             source={{ uri: product.image }}
                             style={[styles.image, { width: imageWidth, height: imageHeight }]}
-                            resizeMode="contain"
+                            contentFit="contain"
                         />
                     </View>
                 </TouchableOpacity>
                 <View style={styles.details}>
                     <TouchableOpacity onPress={handleVisit}>
-                        <Text variant="titleMedium" numberOfLines={2} style={styles.title}>{product.title}</Text>
-                        <Text variant="bodySmall" numberOfLines={3}>{product.description}</Text>
+                        <Text variant="titleMedium" numberOfLines={2} style={[styles.title, {color: colors.primary}]}>{product.title}</Text>
+                        <Text variant="bodySmall" numberOfLines={3} style={{color: colors.onSurface}}>{product.description}</Text>
                     </TouchableOpacity>
-                    <Text variant="bodyMedium">Price: <Text style={{ fontWeight: 'bold' }}>${product.price}</Text></Text>
+                    <Text variant="bodyMedium">Price: <Text style={{ fontWeight: 'bold', color: colors.onSurface }}>${product.price}</Text></Text>
                     <View style={styles.counter}>
                         <IconButton icon="minus" size={20} onPress={handleDecrement} disabled={count === 1} />
                         <Text variant="titleMedium" style={{ flex: 1, textAlign: 'center' }}>{count}</Text>
                         <IconButton icon="plus" size={20} onPress={handleIncrement} />
                     </View>
                     <View style={styles.totalContainer}>
-                        <Text variant="titleMedium">Total: <Text style={{ fontWeight: 'bold' }}>${totalPrice.toFixed(2)}</Text></Text>
+                        <Text variant="titleMedium">Total: <Text style={{ fontWeight: 'bold', color: colors.onSurface }}>${totalPrice.toFixed(2)}</Text></Text>
                         <IconButton
                             icon="trash"
                             size={18}
@@ -98,7 +97,6 @@ const styles = StyleSheet.create({
         width: "100%",
         marginVertical: 4,
         backgroundColor: '#fff',
-        borderColor: myTheme.colors.primary,
         borderWidth: 1,
     },
     webCard: {
@@ -127,7 +125,6 @@ const styles = StyleSheet.create({
     },
     title: {
         fontWeight: 'bold',
-    color: myTheme.colors.primary,
     },
     counter: {
         flexDirection: 'row',
