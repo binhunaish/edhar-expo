@@ -33,8 +33,8 @@ export default function ProductDetails() {
 
   // Autoplay slideshow effect
   useEffect(() => {
-    product?.images && (product.images[1] = product.images[0]);
     if (product?.images && product.images.length > 1) {
+      setActiveSlide(0);
       const slideWidth = windowWidth - 16;
       intervalRef.current = setInterval(() => {
         setActiveSlide(prevActiveSlide => {

@@ -4,16 +4,21 @@
         "slug": "edhar-expo",
         "version": "1.0.0",
         "orientation": "portrait",
-        "icon": "./assets/images/logo_without_frame.png",
+        "icon": "./assets/images/logo.png",
         "scheme": "edhar",
         "userInterfaceStyle": "automatic",
+        "splash": {
+            "image": "./assets/images/logo.png",
+            "resizeMode": "contain",
+            "backgroundColor": "#ffffff"
+        },
         "newArchEnabled": true,
         "ios": {
             "supportsTablet": true
         },
         "android": {
             "adaptiveIcon": {
-                "foregroundImage": "./assets/images/logo_without_frame.png",
+                "foregroundImage": "./assets/images/logo.png",
                 "backgroundColor": "#ffffff"
             },
             "edgeToEdgeEnabled": true,
@@ -31,8 +36,8 @@
             "expo-router", [
                 "expo-splash-screen",
                 {
-                    "image": "./assets/images/logo_without_frame.png",
-                    "imageWidth": "50vh",
+                    "image": "./assets/images/logo.png",
+                    "imageWidth": 200,
                     "resizeMode": "contain",
                     "backgroundColor": "#ffffff"
                 }

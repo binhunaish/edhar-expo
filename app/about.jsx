@@ -1,7 +1,8 @@
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { ScrollView, useState, useWindowDimensions, View } from "react-native";
+import { useState } from "react";
+import { ScrollView, useWindowDimensions, View } from "react-native";
 import { Button, IconButton, Portal, Snackbar, Text, useTheme } from "react-native-paper";
 
 export default function About() {
@@ -15,7 +16,7 @@ export default function About() {
       <IconButton icon="arrow-left" onPress={router.back} style={{ zIndex: 1000, backgroundColor: colors.background, shadowRadius: 16, position: "absolute" }} />
       <StatusBar />
       <View style={{padding: 16, backgroundColor: colors.background, borderRadius: 64, marginVertical: 16, alignSelf: "center", display:"flex", justifyContent: "center", alignItems: "center"}}>
-        <Image style={{ width: screen.width * 0.5, height: screen.width * 0.5, alignSelf: "center" }} source={require("../assets/images/logo/logo without frame.svg")} />
+        <Image style={{ width: screen.width * 0.5, height: screen.width * 0.5, alignSelf: "center" }} source={require("../assets/images/logo/logo_without_frame.png")} />
       </View>
       <Text variant="titleLarge" style={{ color: colors.onBackground, fontSize: 30, textAlign: "center", fontWeight: "bold", marginBottom: 8 }}>Aknan</Text>
       <Text variant="bodyLarge" style={{ marginBottom: 16 }}>
